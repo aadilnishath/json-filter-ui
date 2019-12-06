@@ -11,7 +11,21 @@ class App extends React.Component {
     this.state = {
       source: '',
       query: '',
-      error: null
+      error: null,
+      demo: {
+        hello: 'value',
+        hi: 5,
+        welcome: {
+          adil: 'value'
+        },
+        employees: [
+          {
+            id: 1
+          }, {
+            id: 2
+          }
+        ]
+      }
     }
   }
 
@@ -21,7 +35,32 @@ class App extends React.Component {
     });
   }
 
+  something(obj) {
+    let keys = [];
+    keys = Object.keys(obj);
+    keys.forEach(key => {
+      if (!obj[key] instanceof Array) {
+        let subKeys = this.something(obj[key]);
+        subKeys.forEach(subKey => {
+          keys.push(key + "." + subKey);
+        });
+      }
+      if (obj[key] instanceof Array) {
+        obj[key].forEach(element => {
+          let subKeys = this.something(element);
+          subKeys.forEach(subKey => {
+            keys.push(key + "." + subKey);
+          })
+        });
+      }
+    });
+    return keys;
+  }
+
   render() {
+    const data = Array.from(new Set(this.something(this.state.demo))).sort();
+    console.log(data);
+
     const resolver = (fieldName, root) => root[fieldName];
     let query, source, result;
     try {
